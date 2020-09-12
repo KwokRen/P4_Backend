@@ -41,7 +41,7 @@ For this project, I will be building a task management application. The purpose 
 
 ## Time / Priority Matrix 
 
-- [Time / Priority Matrix]
+[Time / Priority Matrix](https://res.cloudinary.com/dpggcudix/image/upload/v1599916281/Screen_Shot_2020-09-12_at_9.11.00_AM_wi34s0.png)
 
 ## MVP / PostMVP
 
