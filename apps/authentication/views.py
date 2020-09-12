@@ -37,6 +37,5 @@ class LoginAPIView(APIView):
                 "password": request.data.get("password")
             }
         serializer = self.serializer_class(data=user)
-        print(serializer)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
