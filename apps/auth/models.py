@@ -6,7 +6,7 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, username, email, password=None, first_name=None, last_name=None):
+    def create_user(self, username, email, password=None):
         if username is None:
             raise TypeError("Users must have a username.")
         if email is None:
@@ -14,8 +14,6 @@ class UserManager(BaseUserManager):
         user = self.model(
             username=username,
             email=self.normalize_email(email),
-            first_name=first_name,
-            last_name=last_name,
             is_staff=False
         )
         user.set_password(password)
@@ -34,8 +32,6 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(db_index=True, max_length=255, unique=True)
     email = models.EmailField(db_index=True, unique=True)
-    first_name = models.CharField(max_length=255, null=True, blank=True)
-    last_name = models.CharField(max_length=255, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -54,10 +50,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self._generate_jwt_token()
 
     def _generate_jwt_token(self):
-        """
-        Generates a JSON Web Token that stores this (current object) user's instance and has an expiration date
-        set to 60 days into the future.
-        """
         payload = jwt_payload_handler(self)
         token = jwt_encode_handler(payload)
 
