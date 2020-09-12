@@ -1,3 +1,36 @@
-from django.shortcuts import render
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import viewsets, status
+from rest_framework.exceptions import (ValidationError, PermissionDenied)
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from apps.api.models import Task, Item
+from apps.api.serializers import TaskSerializer, ItemSerializer
 
-# Create your views here.
+
+class TaskViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        queryset = Task.objects.all().filter(user=self.request.user)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        task = Task.objects.filter(
+            name=request.data.get('name'),
+            user=request.user
+        )
+
+        if task:
+            message = 'Task already exists.'
+            raise ValidationError(message)
+        return super().create(request)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        task = Task.objects.get(pk=self.kwargs["pk"])
+        if not request.user == task.user:
+            raise PermissionDenied("You cannot delete this category")
+        return super().destroy(request, *args, **kwargs)
