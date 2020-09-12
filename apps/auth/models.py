@@ -4,8 +4,8 @@ from rest_framework_jwt.settings import api_settings
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
-class UserManager(BaseUserManager):
 
+class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
         if username is None:
             raise TypeError("Users must have a username.")
@@ -28,6 +28,7 @@ class UserManager(BaseUserManager):
         user.is_staff = True
         user.save()
         return user
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(db_index=True, max_length=255, unique=True)
