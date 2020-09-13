@@ -26,6 +26,7 @@ class TaskViewSet(viewsets.ModelViewSet):
             raise ValidationError(message)
         return super().create(request)
 
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -35,13 +36,27 @@ class TaskItems(generics.ListCreateAPIView):
     serializer_class = ItemSerializer
 
     def get_queryset(self):
-        if self.kwargs.get("task_pk"):
-            task = Task.objects.get(pk=self.kwargs["task_pk"])
-            queryset = Item.objects.filter(
-                task=task,
-                user=self.request.user
-            )
-            return queryset
+        try:
+            if self.kwargs.get("task_pk"):
+                task = Task.objects.get(pk=self.kwargs["task_pk"])
+                queryset = Item.objects.filter(
+                    task=task,
+                    user=self.request.user
+                )
+                if not queryset:
+                    raise ValidationError("You do not have access to this task.")
+                else:
+                    return queryset
+        except Task.DoesNotExist:
+            raise ValidationError('You do not have access to this task.')
+
+
+    def create(self, request, *args, **kwargs):
+        try:
+            if self.request.user.tasks.get(pk=self.request.data['task']):
+                return super().create(request)
+        except Task.DoesNotExist:
+            raise ValidationError('You cannot create the item in this task.')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -52,34 +67,28 @@ class OneItem(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ItemSerializer
 
     def get_queryset(self):
-        if self.kwargs.get("task_pk") and self.kwargs.get("pk"):
-            task = Task.objects.get(pk=self.kwargs["task_pk"])
-            queryset = Item.objects.filter(
-                task=task,
-                user=self.request.user,
-                pk=self.kwargs["pk"]
-            )
-            return queryset
+        try:
+            if self.kwargs.get("task_pk") and self.kwargs.get("pk"):
+                task = Task.objects.get(pk=self.kwargs["task_pk"])
+                queryset = Item.objects.filter(
+                    task=task,
+                    user=self.request.user,
+                    pk=self.kwargs["pk"]
+                )
+                return queryset
+        except Task.DoesNotExist:
+            raise ValidationError("You cannot access a item that doesn't exist")
 
+    def update(self, request, *args, **kwargs):
+        try:
+            if self.request.user.tasks.get(pk=self.request.data['task']):
+                return super().update(request, *args, **kwargs)
+        except Task.DoesNotExist:
+            raise ValidationError("You cannot update the item in this task.")
 
-# class ItemViewSet(viewsets.ModelViewSet):
-#     permission_classes = (IsAuthenticated,)
-#     serializer_class = ItemSerializer
-#
-#     def get_queryset(self):
-#         queryset = Item.objects.all().filter(user=self.request.user)
-#         return queryset
-#
-#     def create(self, request, *args, **kwargs):
-#         item = Item.objects.filter(
-#             name=request.data.get('name'),
-#             user=request.user
-#         )
-#
-#         if item:
-#             message = 'Item already exists.'
-#             raise ValidationError(message)
-#         return super().create(request)
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
+    def destroy(self, request, *args, **kwargs):
+        try:
+            if self.request.user.tasks.get(pk=self.kwargs['task_pk']):
+                return super().destroy(request, *args, **kwargs)
+        except Task.DoesNotExist:
+            raise ValidationError("You cannot delete the item in this task.")
