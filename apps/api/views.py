@@ -30,24 +30,42 @@ class TaskViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class ItemViewSet(viewsets.ModelViewSet):
+class TaskItems(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
-    serializer_class = ItemSerializer
 
     def get_queryset(self):
-        queryset = Item.objects.all().filter(user=self.request.user)
-        return queryset
+        if self.kwargs.get("task_pk"):
+            task = Task.objects.get(pk=self.kwargs["task_pk"])
+            queryset = Item.objects.filter(
+                task=task,
+                user=self.request.user
+            )
+            return queryset
 
-    def create(self, request, *args, **kwargs):
-        item = Item.objects.filter(
-            name=request.data.get('name'),
-            user=request.user
-        )
-
-        if item:
-            message = 'Item already exists.'
-            raise ValidationError(message)
-        return super().create(request)
+    serializer_class = ItemSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+# class ItemViewSet(viewsets.ModelViewSet):
+#     permission_classes = (IsAuthenticated,)
+#     serializer_class = ItemSerializer
+#
+#     def get_queryset(self):
+#         queryset = Item.objects.all().filter(user=self.request.user)
+#         return queryset
+#
+#     def create(self, request, *args, **kwargs):
+#         item = Item.objects.filter(
+#             name=request.data.get('name'),
+#             user=request.user
+#         )
+#
+#         if item:
+#             message = 'Item already exists.'
+#             raise ValidationError(message)
+#         return super().create(request)
+#
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)
