@@ -29,8 +29,25 @@ class TaskViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    def destroy(self, request, *args, **kwargs):
-        task = Task.objects.get(pk=self.kwargs["pk"])
-        if not request.user == task.user:
-            raise PermissionDenied("You cannot delete this category")
-        return super().destroy(request, *args, **kwargs)
+
+class ItemViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ItemSerializer
+
+    def get_queryset(self):
+        queryset = Item.objects.all().filter(user=self.request.user)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        item = Item.objects.filter(
+            name=request.data.get('name'),
+            user=request.user
+        )
+
+        if item:
+            message = 'Item already exists.'
+            raise ValidationError(message)
+        return super().create(request)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

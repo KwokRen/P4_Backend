@@ -12,9 +12,9 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    item = ItemSerializer(many=True, read_only=True, required=False)
+    items = ItemSerializer(many=True, read_only=True, required=False)
 
     class Meta:
         model = Task
-        fields = ("id", "name", "description", "user", "date", "created_at", "updated_at", "is_public", "item")
+        fields = ("id", "name", "description", "items", "user", "date", "created_at", "updated_at", "is_public")
 
