@@ -32,6 +32,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 
 class TaskItems(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
+    serializer_class = ItemSerializer
 
     def get_queryset(self):
         if self.kwargs.get("task_pk"):
@@ -42,10 +43,23 @@ class TaskItems(generics.ListCreateAPIView):
             )
             return queryset
 
-    serializer_class = ItemSerializer
-
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class OneItem(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ItemSerializer
+
+    def get_queryset(self):
+        if self.kwargs.get("task_pk") and self.kwargs.get("pk"):
+            task = Task.objects.get(pk=self.kwargs["task_pk"])
+            queryset = Item.objects.filter(
+                task=task,
+                user=self.request.user,
+                pk=self.kwargs["pk"]
+            )
+            return queryset
 
 
 # class ItemViewSet(viewsets.ModelViewSet):
