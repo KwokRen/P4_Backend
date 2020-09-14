@@ -86,9 +86,9 @@ For this project, I will be building a task management application. The purpose 
 
 ## Additional Libraries
 
-```
-None at the moment
-```
+[Django Rest Framework JWT](https://jpadilla.github.io/django-rest-framework-jwt/) <br>
+[Django REST Framework](https://www.django-rest-framework.org/) <br>
+[Heroku](https://www.heroku.com/) <br>
 
 ## Code Snippet
 
