@@ -14,15 +14,14 @@ For this project, I will be building a task management application. The purpose 
 - Users can edit tasks
 - Users can also cross off tasks
 - Users can delete tasks
-- Tasks will be ordered by date
 
 ## Project Schedule
 
 |  Day | Deliverable | Status
 |---|---| ---|
 |Friday, September 11th (Day 1)| Project Description / Wireframes / Priority Matrix / Timeline `backend` & `frontend`/ Deployment | Complete
-|Saturday, September 12th (Day 2)| Working on custom authentication | Incomplete
-|Sunday, September 13th (Day 3)| Working on building out models | Incomplete
+|Saturday, September 12th (Day 2)| Working on custom authentication | Complete
+|Sunday, September 13th (Day 3)| Working on building out models | Complete
 |Monday, September 14th (Day 4)| Finishing up `backend` | Incomplete
 |Tuesday, September 15th (Day 5)| Start fetching data into the `frontend` | Incomplete
 |Wednesday, September 16th (Day 6)| Continue working fetching data into the `frontend` | Incomplete
@@ -35,8 +34,7 @@ For this project, I will be building a task management application. The purpose 
 
 ## Wireframes
 
-- [Mobile]
-- [Desktop]
+[ERD Diagram](https://res.cloudinary.com/dpggcudix/image/upload/v1600042886/Screen_Shot_2020-09-13_at_8.20.53_PM_rfxpov.png)
 
 
 ## Time / Priority Matrix 
