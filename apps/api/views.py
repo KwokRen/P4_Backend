@@ -26,9 +26,17 @@ class TaskViewSet(viewsets.ModelViewSet):
             raise ValidationError(message)
         return super().create(request)
 
-
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        task = Task.objects.get(pk=self.kwargs['pk'])
+        if not request.user == task.user:
+            raise PermissionDenied("You cannot delete this task")
+        super().destroy(request, *args, **kwargs)
+        return Response({
+            "message": "Successfully deleted task"
+        })
 
 
 class TaskItems(generics.ListCreateAPIView):
@@ -89,6 +97,9 @@ class OneItem(generics.RetrieveUpdateDestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         try:
             if self.request.user.tasks.get(pk=self.kwargs['task_pk']):
-                return super().destroy(request, *args, **kwargs)
+                super().destroy(request, *args, **kwargs)
+                return Response({
+                    "message": "Successfully deleted item"
+                })
         except Task.DoesNotExist:
             raise ValidationError("You cannot delete the item in this task.")

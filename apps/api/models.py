@@ -9,8 +9,9 @@ class Task(models.Model):
 
     user = models.ForeignKey(User, related_name="tasks", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    date = models.DateField()
+    date = models.DateField(null=True)
     description = models.TextField(blank=True)
+    completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_public = models.BooleanField(default=False)
@@ -27,6 +28,7 @@ class Item(models.Model):
     user = models.ForeignKey(User, related_name="items", on_delete=models.CASCADE)
     task = models.ForeignKey(Task, related_name="items", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
+    completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_public = models.BooleanField(default=False)
