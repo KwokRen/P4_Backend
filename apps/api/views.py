@@ -12,7 +12,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
 
     def get_queryset(self):
-        queryset = Task.objects.all().filter(user=self.request.user).order_by('created_date')
+        queryset = Task.objects.all().filter(user=self.request.user).order_by('created_at')
         return queryset
 
     def create(self, request, *args, **kwargs):
@@ -50,7 +50,7 @@ class TaskItems(generics.ListCreateAPIView):
                 queryset = Item.objects.filter(
                     task=task,
                     user=self.request.user
-                ).order_by('created_date')
+                ).order_by('created_at')
                 if not queryset:
                     raise ValidationError("You do not have access to this task.")
                 else:
