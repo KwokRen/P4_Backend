@@ -11,25 +11,27 @@ For this project, I will be building a task management application. The purpose 
 - Users can register for an account
 - Users can log into their account
 - Users can create a task
-- Users can edit tasks
-- Users can also cross off tasks
+- Users can edit task description and due dates
+- Users can check off tasks
 - Users can delete tasks
+- Users can create items within the task
+- Users can edit and delete items within the task
 
 ## Project Schedule
 
 |  Day | Deliverable | Status
 |---|---| ---|
 |Friday, September 11th (Day 1)| Project Description / Wireframes / Priority Matrix / Timeline `backend` & `frontend`/ Deployment | Complete
-|Saturday, September 12th (Day 2)| Working on custom authentication | Incomplete
-|Sunday, September 13th (Day 3)| Working on building out models | Incomplete
-|Monday, September 14th (Day 4)| Finishing up `backend` | Incomplete
-|Tuesday, September 15th (Day 5)| Start fetching data into the `frontend` | Incomplete
-|Wednesday, September 16th (Day 6)| Continue working fetching data into the `frontend` | Incomplete
-|Thursday, September 17th (Day 7)| Fixing breakcases| Incomplete
-|Friday, September 18th (Day 8)| Post-MVP & CSS in the `frontend` | Incomplete
-|Saturday, September 19th (Day 9)| Fixing Bugs | Incomplete
-|Sunday, September 20th (Day 10)| Fixing Bugs | Incomplete
-|Monday, September 21st (Day 11)| Finish Documentation | Incomplete
+|Saturday, September 12th (Day 2)| Working on custom authentication | Complete
+|Sunday, September 13th (Day 3)| Working on building out models | Complete
+|Monday, September 14th (Day 4)| Finishing up `backend` | Complete
+|Tuesday, September 15th (Day 5)| Start fetching data into the `frontend` | Complete
+|Wednesday, September 16th (Day 6)| Continue working fetching data into the `frontend` | Complete
+|Thursday, September 17th (Day 7)| Fixing breakcases| Complete
+|Friday, September 18th (Day 8)| Post-MVP & CSS in the `frontend` | Complete
+|Saturday, September 19th (Day 9)| Fixing Bugs | Complete
+|Sunday, September 20th (Day 10)| Fixing Bugs | Complete
+|Monday, September 21st (Day 11)| Finish Documentation | Complete
 |Tuesday, September 22nd (Day 12)| Presentations | Incomplete
 
 ## Wireframes
@@ -45,15 +47,15 @@ For this project, I will be building a task management application. The purpose 
 
 #### MVP 
 
-:white_circle: Authentication <br>
-:white_circle: Planning models and assocations <br>
-:white_circle: Building models <br>
+:white_check_mark: Authentication <br>
+:white_check_mark: Planning models and assocations <br>
+:white_check_mark: Building models <br>
 :white_check_mark: Deployment <br>
-:white_circle: Building serializers  <br>
-:white_circle: Building views <br>
-:white_circle: Building URLs <br>
-:white_circle: Testing on Postman <br>
-:white_circle: Testing on Heroku <br>
+:white_check_mark: Building serializers  <br>
+:white_check_mark: Building views <br>
+:white_check_mark: Building URLs <br>
+:white_check_mark: Testing on Postman <br>
+:white_check_mark: Testing on Heroku <br>
 
 #### PostMVP 
 
@@ -66,16 +68,16 @@ For this project, I will be building a task management application. The purpose 
 ### MVP
 | Component | Priority | Estimated Time | Time Invested | Actual Time |
 | --- | :---: |  :---: | :---: | :---: |
-| Authentication | H | 5hrs | hr | hr|
-| Planning Models | H | 3hrs | hr | hr|
-| Deploying Backend | L | 0hr | hr | hr|
-| Building Models | H | 4hrs | hr | hr |
-| Building Serializers | M | 2hr | hr | hr|
-| Building Views | H | 3hrs | hr | hr |
-| Building URLs | H | 1hr | hr | hr |
-| Testing on Postman | H | 1hr | hr | hr |
-| Testing on Heroku | H | 1hr | hr | hr |
-| Total | H | 20hrs| hrs | hrs |
+| Authentication | H | 5hrs | 2hrs | 2hrs |
+| Planning Models | H | 3hrs | 1hr | 1hr |
+| Deploying Backend | L | 0hr | 0hr | 0hr |
+| Building Models | H | 4hrs | 1hr | 1hr |
+| Building Serializers | M | 2hr | 1hr | 1hr |
+| Building Views | H | 3hrs | 2hrs | 2hrs |
+| Building URLs | H | 1hr | 1hr | 1hr |
+| Testing on Postman | H | 1hr | 1hr | 1hr |
+| Testing on Heroku | H | 1hr | 1hr | 1hr |
+| Total | H | 20hrs| 10hrs | 10hrs |
 
 ### PostMVP
 | Component | Priority | Estimated Time | Time Invested | Actual Time |
@@ -93,11 +95,29 @@ For this project, I will be building a task management application. The purpose 
 ## Code Snippet
 
 ```
-Work in progress...
+def get_queryset(self):
+        try:
+            if self.kwargs.get("task_pk") and self.kwargs.get("pk"):
+                task = Task.objects.get(pk=self.kwargs["task_pk"])
+                queryset = Item.objects.filter(
+                    task=task,
+                    user=self.request.user,
+                    pk=self.kwargs["pk"]
+                )
+                return queryset
+        except Task.DoesNotExist:
+            raise ValidationError("You cannot access a item that doesn't exist")
 ```
+
+I thought the try and except was very useful to grab a error message that was not generated by the view class that was used. It was customized so that we could check for it in the frontend and work off of that.
 
 ## Issues and Resolutions
 
 ```
-Work in progress...
+ISSUE: During Heroku authorization migration: 
+You are trying to change the nullable field 'first_name' on user to non-nullable without a default; we can't do that (the database needs something to populate existing rows).
+RESOLUTION: Had to add back null=True to first_name and last_name User model
+
+ISSUE: item did not pop up in the task when defining a singular variable in serializer 
+RESOLUTION: pluralizing item because it is many=True for serializing
 ```
