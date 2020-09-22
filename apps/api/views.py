@@ -11,9 +11,11 @@ class TaskViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     serializer_class = TaskSerializer
 
+    # Grabbing all tasks
     def get_queryset(self):
         queryset = Task.objects.all().filter(user=self.request.user).order_by('created_at')
         return queryset
+    # Creating a task
 
     def create(self, request, *args, **kwargs):
         task = Task.objects.filter(
@@ -29,6 +31,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    # Removing a task
     def destroy(self, request, *args, **kwargs):
         task = Task.objects.get(pk=self.kwargs['pk'])
         if not request.user == task.user:
@@ -43,6 +46,7 @@ class TaskItems(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ItemSerializer
 
+    # Listing all the items within a task
     def get_queryset(self):
         try:
             if self.kwargs.get("task_pk"):
@@ -58,7 +62,7 @@ class TaskItems(generics.ListCreateAPIView):
         except Task.DoesNotExist:
             raise ValidationError('You do not have access to this task.')
 
-
+    # Creating an item
     def create(self, request, *args, **kwargs):
         try:
             if self.request.user.tasks.get(pk=self.request.data['task']):
@@ -74,6 +78,7 @@ class OneItem(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ItemSerializer
 
+    # Getting all items
     def get_queryset(self):
         try:
             if self.kwargs.get("task_pk") and self.kwargs.get("pk"):
@@ -87,6 +92,7 @@ class OneItem(generics.RetrieveUpdateDestroyAPIView):
         except Task.DoesNotExist:
             raise ValidationError("You cannot access a item that doesn't exist")
 
+    # Updating an item
     def update(self, request, *args, **kwargs):
         try:
             if self.request.user.tasks.get(pk=self.request.data['task']):
@@ -94,6 +100,7 @@ class OneItem(generics.RetrieveUpdateDestroyAPIView):
         except Task.DoesNotExist:
             raise ValidationError("You cannot update the item in this task.")
 
+    # Deleting an item
     def destroy(self, request, *args, **kwargs):
         try:
             if self.request.user.tasks.get(pk=self.kwargs['task_pk']):
