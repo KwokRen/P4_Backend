@@ -32,7 +32,7 @@ For this project, I will be building a task management application. The purpose 
 |Saturday, September 19th (Day 9)| Fixing Bugs | Complete
 |Sunday, September 20th (Day 10)| Fixing Bugs | Complete
 |Monday, September 21st (Day 11)| Finish Documentation | Complete
-|Tuesday, September 22nd (Day 12)| Presentations | Incomplete
+|Tuesday, September 22nd (Day 12)| Presentations | Complete
 
 ## Wireframes
 
